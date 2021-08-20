@@ -4,7 +4,6 @@ const puppeteer = require('puppeteer');
  * Pesquisa no site ge.globo.com/agenda/#/todos, as partidas que acontecerão no dia e seus respectivos campeonatos. 
  * Agrupa e retorna.
  */
-
 const todaysMatch = async () => {
   const browser = await puppeteer.launch({
     defaultViewport: {

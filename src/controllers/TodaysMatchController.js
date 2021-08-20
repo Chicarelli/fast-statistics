@@ -32,5 +32,4 @@ const createMatches = async(matches) => {
       }
     });
   })
-
 }
