@@ -1,4 +1,5 @@
 const todaysMatch = require("../puppeteers/searchTodaysMatch");
+const searchRealName = require("../puppeteers/searchForClassificationName");
 const Match = require("../models/Match");
 
 /* 
@@ -6,6 +7,23 @@ const Match = require("../models/Match");
  */
 (async () => {
   let matches = await todaysMatch();
+
+  /* 
+  * Tratativa de nome do time. 
+  */
+
+  for(const indexChampionship in matches){
+    for(const indexMatch in matches[indexChampionship].matches){
+      
+      console.log(`Procurando por: ${matches[indexChampionship].matches[indexMatch].homeTeam}`);
+      matches[indexChampionship].matches[indexMatch].homeTeam = await searchRealName(matches[indexChampionship].matches[indexMatch].homeTeam, matches[indexChampionship].championshipName) || matches[indexChampionship].matches[indexMatch].homeTeam;
+      console.log(`Resultado: ${matches[indexChampionship].matches[indexMatch].homeTeam}`);
+
+      console.log(`Procurando por: ${matches[indexChampionship].matches[indexMatch].awayTeam}`);
+      matches[indexChampionship].matches[indexMatch].awayTeam = await searchRealName(matches[indexChampionship].matches[indexMatch].awayTeam, matches[indexChampionship].championshipName) || matches[indexChampionship].matches[indexMatch].awayTeam
+      console.log(`Resultado: ${matches[indexChampionship].matches[indexMatch].awayTeam}`);
+    }
+  }
 
   createMatches(matches);
   

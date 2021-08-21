@@ -28,7 +28,6 @@ Match_teams.init({
   sequelize,
   modelName: 'Match_teams'
 })
-
 /* 
  * Adicionando novas coluna à tabela e sincronizando elas. 
  */

@@ -59,7 +59,7 @@ const createMatchTeam = async (id, campeonato, data) => {
       console.log('Erro ao tentar salvar dados dos times das partidas', error);
     }
   })
-
+  
 }
 
 findMatchesTeamBasedOnMatch();
