@@ -5,55 +5,59 @@ const puppeteer = require('puppeteer');
  * Agrupa e retorna.
  */
 const todaysMatch = async () => {
-  const browser = await puppeteer.launch({
-    defaultViewport: {
-      width: 2000,
-      height: 1000
-    },
-    timeout: 4000,
-    headless: true
-  });
-  const page = await browser.newPage();
-  await page.goto("https://ge.globo.com/agenda/#/todos"); 
-  //Seletor de agrupamento dos resultados
-  await page.waitForSelector('.GroupByChampionshipsstyle__GroupBychampionshipsWrapper-sc-132ht2b-0');
+  try {
+    const browser = await puppeteer.launch({
+      defaultViewport: {
+        width: 2000,
+        height: 1000
+      },
+      timeout: 4000,
+      headless: true
+    });
+    const page = await browser.newPage();
+    await page.goto("https://ge.globo.com/agenda/#/todos");
+    //Seletor de agrupamento dos resultados
+    await page.waitForSelector('.GroupByChampionshipsstyle__GroupBychampionshipsWrapper-sc-132ht2b-0');
 
-  const data = await page.$$eval('.GroupByChampionshipsstyle__GroupBychampionshipsWrapper-sc-132ht2b-0', async (championships) => {
-    const dataGroup = [];
-    await Promise.all(championships.map(async championship => {
-      const groupMatches = []
-      const element = championship; 
+    const data = await page.$$eval('.GroupByChampionshipsstyle__GroupBychampionshipsWrapper-sc-132ht2b-0', async (championships) => {
+      const dataGroup = [];
+      await Promise.all(championships.map(async championship => {
+        const groupMatches = []
+        const element = championship;
 
-      const nameOfTheChampionship = element.childNodes[0].textContent;
+        const nameOfTheChampionship = element.childNodes[0].textContent;
 
-      const matchesEl = element.childNodes[1].childNodes;
+        const matchesEl = element.childNodes[1].childNodes;
 
-      const matches = Object.keys(matchesEl).map(function(index){
-        const element = matchesEl[index].childNodes;
-        let quantityChild = matchesEl[index].childElementCount;
+        const matches = Object.keys(matchesEl).map(function (index) {
+          const element = matchesEl[index].childNodes;
+          let quantityChild = matchesEl[index].childElementCount;
 
-        let homeTeamIndex = quantityChild == 4 ? 1 : 2;
-        let awayTeamIndex = quantityChild == 4 ? 2 : 3;
+          let homeTeamIndex = quantityChild == 4 ? 1 : 2;
+          let awayTeamIndex = quantityChild == 4 ? 2 : 3;
 
-        const homeTeam = element[homeTeamIndex].textContent;
-        const awayTeam = element[awayTeamIndex].textContent;
+          const homeTeam = element[homeTeamIndex].textContent;
+          const awayTeam = element[awayTeamIndex].textContent;
 
-        return { homeTeam, awayTeam }
-      });
+          return { homeTeam, awayTeam }
+        });
 
-      let data = {
-        championshipName: nameOfTheChampionship,
-        matches
-      }
+        let data = {
+          championshipName: nameOfTheChampionship,
+          matches
+        }
 
-      dataGroup.push(data);
+        dataGroup.push(data);
 
-    }));
+      }));
 
-    return dataGroup;
+      return dataGroup;
 
-  });
-  return data;
+    });
+    return data;
+  } catch (error) {
+    await browser.close();
+  }
 };
 
 module.exports = todaysMatch;

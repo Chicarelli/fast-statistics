@@ -80,8 +80,8 @@ const searchMatchTeams = async(team1 = null, team2 = null, championship = null) 
     await browser.close();
     return teamsDiv;  
 
-    // await browser.close();
   } catch (error) {
+     await browser.close();
     console.log('Error on search data', error);
     return error;
   }
