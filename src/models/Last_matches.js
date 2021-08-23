@@ -1,5 +1,5 @@
 const { Sequelize, DataTypes, Model } = require('sequelize');
-const sequelize = require("../db");
+const sequelize = require("../../db");
 
 class Last_matches extends Model{}
   
@@ -22,12 +22,14 @@ Last_matches.init({
   },
 
   situation: DataTypes.STRING,
+  teamName: DataTypes.STRING,
+  teamAgainst: DataTypes.STRING,
 
   goalsMade: DataTypes.INTEGER,
   goalsTaken: DataTypes.INTEGER,
 
   corners: DataTypes.INTEGER,
-  cornersAgains: DataTypes.INTEGER,
+  cornersAgainst: DataTypes.INTEGER,
   
   yellowCard: DataTypes.INTEGER,
   redCard: DataTypes.INTEGER,
@@ -36,10 +38,6 @@ Last_matches.init({
   faultsTaken: DataTypes.INTEGER,
   
   result: DataTypes.STRING,
-  refultGoals: DataTypes.STRING,
-
-  goalsMake: DataTypes.INTEGER,
-  goalsTaken: DataTypes.INTEGER
 
 }, { 
   tableName: 'last_matches',

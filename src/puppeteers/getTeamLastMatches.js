@@ -11,12 +11,12 @@
 
 const puppeteer = require('puppeteer');
 
-const searchTeamLastMatches = async () => {
-  const name = 'Palmeiras';
+const searchTeamLastMatches = async (name) => {
 
   try {
-    const browser = await puppeteer.launch({ headless: false, defaultViewport: null });
+    const browser = await puppeteer.launch({ headless: true, defaultViewport: null, timeout: 10000});
     const page = await browser.newPage();
+    page.setDefaultTimeout(5000);
     await page.goto('https://www.google.com');
     await page.waitForSelector(`input[type="text"]`)
     await page.click(`input[type="text"]`);
@@ -24,37 +24,29 @@ const searchTeamLastMatches = async () => {
     await page.keyboard.type(`Partidas ${name}`);
     await page.keyboard.press('Enter');
     await page.waitForSelector(`#sports-app > div > div:nth-child(2) > div > div > div > ol > li:nth-child(1)`);
-
+   
     await page.click(`#sports-app > div > div:nth-child(2) > div > div > div > ol > li:nth-child(1)`);
-
-    await page.waitForSelector('div.imspo_mt__cmd > span');
-
-    let playedGames = await page.$$('div.imspo_mt__cmd > span');
-    console.log(playedGames.length);
-
-    /* Fazer slice -15 */
     
+    await page.mainFrame().waitForTimeout(5000);
+    
+    let playedGames = await page.$$('#liveresults-sports-immersive__updatable-team-matches > div > div > table > tbody > tr > td.liveresults-sports-immersive__match-tile.imso-hov.liveresults-sports-immersive__match-grid-bottom-border > div > div > div > table > tbody > tr:nth-child(3) > td.GOsQPe.imspo_mt__wt > div.imspo_mt__ms-w > div > div.imspo_mt__cmd > span');
     playedGames = playedGames.slice(-15);
 
     const allMatches = [];
 
     for (const i in playedGames){
       let element = playedGames[i];
+      await page.mainFrame().waitForTimeout(1000);
+      await element.click();
       try{
         await page.mainFrame().waitForTimeout(1000);
-        await element.click();
-        
-        await page.mainFrame().waitForTimeout(1000);
-
         await page.waitForSelector('#match-stats > div > div > table');
-
         const teamNames = await page.$$eval('div.imso_mh__tm-nm.imso-medium-font.imso_mh__tm-nm-ew > div', (spans) => {
           return {
             homeTeam: spans[0].textContent,
             awayTeam: spans[1].textContent
           }
         });
-
         const homeTeamGols = await page.$$eval('div > div.imso_mh__l-tm-sc.imso_mh__scr-it.imso-light-font', (results) => {
           return results[0].textContent
         })
@@ -171,11 +163,13 @@ const searchTeamLastMatches = async () => {
         await page.goBack();
 
       } catch (error) {
-        console.log(error);
+        console.log('error', name, playedGames.length);
+        await page.goBack();
       }
-      console.log('----------------')
-      console.log(allMatches);
     }
+
+    await browser.close();
+    return allMatches;
 
   } catch (error) {
     console.log(error);
@@ -183,6 +177,5 @@ const searchTeamLastMatches = async () => {
     return null
   }
 }
-searchTeamLastMatches();
 
 module.exports = searchTeamLastMatches;
