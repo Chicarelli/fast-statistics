@@ -5,17 +5,19 @@ const puppeteer = require('puppeteer');
  * Agrupa e retorna.
  */
 const todaysMatch = async () => {
+  const browser = await puppeteer.launch({
+    defaultViewport: {
+      width: 2000,
+      height: 1000
+    },
+    timeout: 4000,
+    headless: true
+  });
   try {
-    const browser = await puppeteer.launch({
-      defaultViewport: {
-        width: 2000,
-        height: 1000
-      },
-      timeout: 4000,
-      headless: true
-    });
+    
     const page = await browser.newPage();
     await page.goto("https://ge.globo.com/agenda/#/todos");
+    // await page.goto("https://ge.globo.com/agenda/#/todos/25-08-2021")
     //Seletor de agrupamento dos resultados
     await page.waitForSelector('.GroupByChampionshipsstyle__GroupBychampionshipsWrapper-sc-132ht2b-0');
 
@@ -50,10 +52,10 @@ const todaysMatch = async () => {
         dataGroup.push(data);
 
       }));
-
       return dataGroup;
 
     });
+    await browser.close();
     return data;
   } catch (error) {
     await browser.close();

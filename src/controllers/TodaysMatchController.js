@@ -5,7 +5,7 @@ const Match = require("../models/Match");
 /* 
  * Controller Principal. 
  */
-(async () => {
+const todaysMatchController = async () => {
   let matches = await todaysMatch();
 
   /* 
@@ -25,17 +25,21 @@ const Match = require("../models/Match");
     }
   }
 
-  createMatches(matches);
-  
-})();
+  await createMatches(matches);
+
+  return;  
+};
 
 /*
  * Recebe resultado de todaysMatch e cria um registro no tabela Match no banco para cada resposta.
  */
 const createMatches = async(matches) => {
 
-  matches.forEach(async championship => {
-    championship.matches.forEach(async match => {
+  for (const i in matches){
+    let championship = matches[i];
+    let matchs = matches[i].matches;
+    for (const i in matchs){
+      let match = matchs[i];
       const newMatch = Match.build({
         home_team: match.homeTeam,
         away_team: match.awayTeam,
@@ -48,6 +52,28 @@ const createMatches = async(matches) => {
       } catch ( error ) {
         console.log('Erro ao tentar salvar partidas: ', error)
       }
-    });
-  })
+    }
+  }
+
+  return;
+  // matches.forEach(async championship => {
+  //   //Provavelmente trocando por for in resolveria... Ou promise.all em matches.forEach.
+  //   championship.matches.forEach(async match => {
+  //     const newMatch = Match.build({
+  //       home_team: match.homeTeam,
+  //       away_team: match.awayTeam,
+  //       date: new Date().toISOString(),
+  //       status: 0,
+  //       campeonato: championship.championshipName
+  //     });
+  //     try{
+  //       await newMatch.save();
+  //     } catch ( error ) {
+  //       console.log('Erro ao tentar salvar partidas: ', error)
+  //     }
+  //   });
+  // });
+  // return;
 }
+
+module.exports = todaysMatchController;

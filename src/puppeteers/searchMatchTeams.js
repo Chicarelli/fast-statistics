@@ -12,24 +12,27 @@ const searchMatchTeams = async(team1 = null, team2 = null, championship = null) 
   if( team1 == null || team2 == null || championship == null){
     return 'Doesnt have enough arguments.';
   }
-
+  const browser = await puppeteer.launch({ headless: true, defaultViewport: null });
   try {
-    const browser = await puppeteer.launch({ headless: true, defaultViewport: null });
     const page = await browser.newPage();
     await page.goto('https://google.com');
     await page.waitForSelector(`input[type="text"]`)
     await page.click(`input[type="text"]`);
-
+    page.setDefaultTimeout(5000);
     /* 
      * Procurar apenas pelo primeiro time + campeonato. Já aparecerá a tabela de classificação daquele campeonato em si.
      * Por lá, procuramos os dois.
      */
     // await page.keyboard.type('Cruzeiro Campeonato Brasileiro Série ');
-    await page.keyboard.type(`${team1} ${championship}`);
+    await page.keyboard.type(`${team1}`);
     await page.keyboard.press('Enter');
     await page.waitForSelector(`#sports-app > div > div:nth-child(2) > div > div > div > ol > li:nth-child(3)`);
 
     await page.click(`#sports-app > div > div:nth-child(2) > div > div > div > ol > li:nth-child(3)`);
+
+    await page.waitForTimeout(1500);
+
+    await page.click('#liveresults-sports-immersive__team-fullpage > div > div:nth-child(1) > div.tb_h.ie7Asb.We6bVe.lr-imso-fix.TbbqEc.YPgUJe.B27Eaf > div > ol > li:nth-child(3)')
 
     await page.waitForSelector('.Jzru1c');
 

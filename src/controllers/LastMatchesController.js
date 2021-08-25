@@ -1,21 +1,35 @@
 const lastMatches = require('../puppeteers/getTeamLastMatches');
 const Last_matches = require("../models/Last_matches");
 const MatchTeams = require('../models/Match_teams');
+const startOfDay = require("date-fns/startOfDay");
+
+const { Sequelize } = require('sequelize');
+const Op = Sequelize.Op;
 
 const controller = async() => {
-  const data = await MatchTeams.findAll() //Dps pegar por where createdAt no dia. 
+  const data = await MatchTeams.findAll({
+    where: {
+      createdAt : {
+        [Op.gte]: startOfDay(new Date())
+      }
+    }
+  })
+
+  console.log(data);
 
   for(const i in data){
     let team = data[i];
 
     const last_matches = await lastMatches(team.name);
     saveLastMatches(last_matches, team.id, team.match_id, team.name);
-    
+
   }
+
+  return;
 }
 
 const saveLastMatches = (lastMatches, matchTeamsId, matchId, teamName) => {
-  lastMatches.forEach(match => {
+  lastMatches.forEach(async match => {
     let isHomeTeam =  match.teams.homeTeam == teamName? true: false;
     let result = 'W';
 
@@ -45,10 +59,9 @@ const saveLastMatches = (lastMatches, matchTeamsId, matchId, teamName) => {
       teamAgainst: isHomeTeam ? match.teams.awayTeam : match.teams.homeTeam,
     });
 
-    lastMatch.save();
+   await  lastMatch.save();
   })
 
 }
 
-controller();
 module.exports = controller;

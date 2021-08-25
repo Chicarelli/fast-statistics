@@ -3,6 +3,7 @@ const MatchTeams = require("../models/Match_teams");
 const Match = require('../models/Match');
 
 const findMatchesTeamBasedOnMatch = async () => {
+
   /* 
    * status = 0; Jogos que ainda não foram procurados. 
    */
@@ -19,9 +20,13 @@ const findMatchesTeamBasedOnMatch = async () => {
 
   for (const i in data) {
     // console.log(data[i].home_team)
-    const result = await searchMatchTeams(data[i].home_team, data[i].away_team, data[i].campeonato)
-
-    await createMatchTeam(data[i].id, data[i].campeonato, result);
+    try{
+      const result = await searchMatchTeams(data[i].home_team, data[i].away_team, data[i].campeonato)
+  
+      await createMatchTeam(data[i].id, data[i].campeonato, result);
+    }catch(error){
+      console.log('erro');
+    }
   }
 
   /* 
@@ -34,6 +39,7 @@ const findMatchesTeamBasedOnMatch = async () => {
     await newInstanceOfMatch.save();
   }
 
+  return;
 };
 
 const createMatchTeam = async (id, campeonato, data) => {
@@ -59,9 +65,7 @@ const createMatchTeam = async (id, campeonato, data) => {
       console.log('Erro ao tentar salvar dados dos times das partidas', error);
     }
   })
-  
+  return;
 }
-
-findMatchesTeamBasedOnMatch();
 
 module.exports = findMatchesTeamBasedOnMatch

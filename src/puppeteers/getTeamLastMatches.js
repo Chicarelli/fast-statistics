@@ -12,15 +12,14 @@
 const puppeteer = require('puppeteer');
 
 const searchTeamLastMatches = async (name) => {
-
+  const browser = await puppeteer.launch({ headless: true, defaultViewport: null, timeout: 10000});
+  
   try {
-    const browser = await puppeteer.launch({ headless: true, defaultViewport: null, timeout: 10000});
     const page = await browser.newPage();
     page.setDefaultTimeout(5000);
     await page.goto('https://www.google.com');
     await page.waitForSelector(`input[type="text"]`)
     await page.click(`input[type="text"]`);
-
     await page.keyboard.type(`Partidas ${name}`);
     await page.keyboard.press('Enter');
     await page.waitForSelector(`#sports-app > div > div:nth-child(2) > div > div > div > ol > li:nth-child(1)`);
