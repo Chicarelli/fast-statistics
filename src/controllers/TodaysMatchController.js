@@ -1,32 +1,38 @@
-const todaysMatch = require("../puppeteers/searchTodaysMatch");
-const searchRealName = require("../puppeteers/searchForClassificationName");
+// const todaysMatch = require("../puppeteers/searchTodaysMatch");
+const todaysMatch = require('../puppeteers/todaysMatch');
 const Match = require("../models/Match");
+
+const championshipsToSearch = [
+  'La liga',
+  'Premier League',
+  'Brasileirão', 
+  'Brasileirão Série B',
+  'Italia Série A',
+  'Bundesliga',
+  'Superliga Argentina',
+  'Ligue 1 França',
+  'Primera A Colombia',
+  'Primera Liga Portugal'
+];
 
 /* 
  * Controller Principal. 
  */
 const todaysMatchController = async () => {
-  let matches = await todaysMatch();
+  const matches = [];
 
-  /* 
-  * Tratativa de nome do time. 
-  */
+  for(const i in championshipsToSearch){
+    let championship = championshipsToSearch[i];
+    match = await todaysMatch(championship);
+    console.log(match);
+    matches.push({
+      championship,
+      matches: match,
+    })
+  };
 
-  for(const indexChampionship in matches){
-    for(const indexMatch in matches[indexChampionship].matches){
-      
-      console.log(`Procurando por: ${matches[indexChampionship].matches[indexMatch].homeTeam}`);
-      matches[indexChampionship].matches[indexMatch].homeTeam = await searchRealName(matches[indexChampionship].matches[indexMatch].homeTeam, matches[indexChampionship].championshipName) || matches[indexChampionship].matches[indexMatch].homeTeam;
-      console.log(`Resultado: ${matches[indexChampionship].matches[indexMatch].homeTeam}`);
-
-      console.log(`Procurando por: ${matches[indexChampionship].matches[indexMatch].awayTeam}`);
-      matches[indexChampionship].matches[indexMatch].awayTeam = await searchRealName(matches[indexChampionship].matches[indexMatch].awayTeam, matches[indexChampionship].championshipName) || matches[indexChampionship].matches[indexMatch].awayTeam
-      console.log(`Resultado: ${matches[indexChampionship].matches[indexMatch].awayTeam}`);
-    }
-  }
-
+  console.log(matches);
   await createMatches(matches);
-
   return;  
 };
 
@@ -36,7 +42,7 @@ const todaysMatchController = async () => {
 const createMatches = async(matches) => {
 
   for (const i in matches){
-    let championship = matches[i];
+    let championship = matches[i].championship;
     let matchs = matches[i].matches;
     for (const i in matchs){
       let match = matchs[i];
@@ -45,8 +51,9 @@ const createMatches = async(matches) => {
         away_team: match.awayTeam,
         date: new Date().toISOString(),
         status: 0,
-        campeonato: championship.championshipName
+        campeonato: championship
       });
+      console.log(newMatch);
       try{
         await newMatch.save();
       } catch ( error ) {
@@ -75,5 +82,4 @@ const createMatches = async(matches) => {
   // });
   // return;
 }
-
 module.exports = todaysMatchController;

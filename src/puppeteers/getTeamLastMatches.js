@@ -29,8 +29,7 @@ const searchTeamLastMatches = async (name) => {
     await page.mainFrame().waitForTimeout(5000);
     
     let playedGames = await page.$$('#liveresults-sports-immersive__updatable-team-matches > div > div > table > tbody > tr > td.liveresults-sports-immersive__match-tile.imso-hov.liveresults-sports-immersive__match-grid-bottom-border > div > div > div > table > tbody > tr:nth-child(3) > td.GOsQPe.imspo_mt__wt > div.imspo_mt__ms-w > div > div.imspo_mt__cmd > span');
-    playedGames = playedGames.slice(-15);
-
+    
     const allMatches = [];
 
     for (const i in playedGames){
@@ -173,7 +172,7 @@ const searchTeamLastMatches = async (name) => {
   } catch (error) {
     console.log(error);
     await browser.close();
-    return null
+    return []
   }
 }
 

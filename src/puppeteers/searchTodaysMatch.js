@@ -17,8 +17,7 @@ const todaysMatch = async () => {
     
     const page = await browser.newPage();
     await page.goto("https://ge.globo.com/agenda/#/todos");
-    // await page.goto("https://ge.globo.com/agenda/#/todos/25-08-2021")
-    //Seletor de agrupamento dos resultados
+    
     await page.waitForSelector('.GroupByChampionshipsstyle__GroupBychampionshipsWrapper-sc-132ht2b-0');
 
     const data = await page.$$eval('.GroupByChampionshipsstyle__GroupBychampionshipsWrapper-sc-132ht2b-0', async (championships) => {

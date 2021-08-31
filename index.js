@@ -11,7 +11,6 @@ const connect = async() => {
   try{
     await sequelize.authenticate()
     await todaysMatch();
-    
     await matchController();
     await lastMatches();
   } catch( error ) {

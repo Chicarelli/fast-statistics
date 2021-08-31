@@ -32,8 +32,6 @@ const searchMatchTeams = async(team1 = null, team2 = null, championship = null) 
 
     await page.waitForTimeout(1500);
 
-    await page.click('#liveresults-sports-immersive__team-fullpage > div > div:nth-child(1) > div.tb_h.ie7Asb.We6bVe.lr-imso-fix.TbbqEc.YPgUJe.B27Eaf > div > ol > li:nth-child(3)')
-
     await page.waitForSelector('.Jzru1c');
 
     const teamsDiv = await page.$$eval('span.ellipsisize.hsKSJe', async (spans, team1, team2) => {
