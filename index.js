@@ -6,13 +6,12 @@ const lastMatches = require("./src/controllers/LastMatchesController");
 /*
  * Testando conexão com o BD. 
  */
-
 const connect = async() => {
   try{
     await sequelize.authenticate()
-    await todaysMatch();
-    await matchController();
-    await lastMatches();
+    // await todaysMatch();
+    // await matchController();
+    // await lastMatches();
   } catch( error ) {
     console.log('ERRO: ', error);
   }
