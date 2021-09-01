@@ -24,7 +24,7 @@ const searchMatchTeams = async(team1 = null, team2 = null, championship = null) 
      * Por lá, procuramos os dois.
      */
     // await page.keyboard.type('Cruzeiro Campeonato Brasileiro Série ');
-    await page.keyboard.type(`${team1}`);
+    await page.keyboard.type(`${team1} ${championship}`);
     await page.keyboard.press('Enter');
     await page.waitForSelector(`#sports-app > div > div:nth-child(2) > div > div > div > ol > li:nth-child(3)`);
 
