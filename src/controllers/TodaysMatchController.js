@@ -12,7 +12,24 @@ const championshipsToSearch = [
   'Superliga Argentina',
   'Ligue 1 França',
   'Primera A Colombia',
-  'Primera Liga Portugal'
+  'Primera Liga Portugal',
+  'Escócia Premiership',
+  'Holanda Eredivisie',
+  'EUA MLS',
+  'Austria bundesliga',
+  'Bélgica Primeira Divisao A',
+  'Chile Primera Division',
+  'Superligaen Dinamarca',
+  'J League',
+  'Liga MX',
+  'Noruega Eliteserien',
+  '1 division peru',
+  'Ekstraklasa Polonia',
+  'Suécia Allsvenskan',
+  'Suiça Super league',
+  
+
+
 ];
 
 /* 
